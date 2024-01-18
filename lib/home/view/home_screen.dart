@@ -20,10 +20,10 @@ class FutureBuilderExample extends StatefulWidget {
 }
 
 class _FutureBuilderExampleState extends State<FutureBuilderExample> {
-  final Future<String> _calculation = Future<String>.delayed(
-    const Duration(seconds: 2),
-    () => 'Data Loaded',
-  );
+  // final Future<String> _calculation = Future<String>.delayed(
+  //   const Duration(seconds: 2),
+  //   () => 'Data Loaded',
+  // );
 
   // final check_calculation = ListDataRepository();
   final ListDataRepository check_calculation = ListDataRepository();
@@ -33,11 +33,51 @@ class _FutureBuilderExampleState extends State<FutureBuilderExample> {
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.displayMedium!,
       textAlign: TextAlign.center,
-      child: FutureBuilder<String>(
+      child: FutureBuilder<List<String>>(
         // future: _calculation, // a previously-obtained Future<String> or null
-        future: check_calculation.test_calculation,
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          List<Widget> children;
+        future: check_calculation.test_ListData,
+        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+          // future에서 데이터 받아서 저장해두고
+          final List<String>? dataLists = snapshot.data;
+
+          // List<Widget> children;
+
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error : ${snapshot.error}'),
+            );
+          }
+
+          if (dataLists != null) {
+            return ListView.builder(
+              itemCount: dataLists.length,
+              itemBuilder: (context, index) {
+                final dataList = dataLists[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Text(dataList.toString()),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: Text('no data found'),
+            );
+          }
+
+          /*
           if (snapshot.hasData) {
             children = <Widget>[
               const Icon(
@@ -63,7 +103,7 @@ class _FutureBuilderExampleState extends State<FutureBuilderExample> {
               ),
             ];
           } else {
-            children = const <Widget>[
+            children = const [
               SizedBox(
                 width: 60,
                 height: 60,
@@ -81,6 +121,7 @@ class _FutureBuilderExampleState extends State<FutureBuilderExample> {
               children: children,
             ),
           );
+          */
         },
       ),
     );

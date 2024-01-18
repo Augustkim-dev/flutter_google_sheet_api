@@ -10,5 +10,18 @@ class ListDataRepository {
     },
   );
 
+  Future<List<String>> test_ListData = Future<List<String>>.delayed(
+    const Duration(seconds: 2),
+    () {
+      return [
+        'List Data Checked01',
+        'List Data Checked02',
+        'List Data Checked03',
+        'List Data Checked04',
+        'List Data Checked05',
+      ];
+    },
+  );
+
   Future<void> getConnect() async {}
 }
